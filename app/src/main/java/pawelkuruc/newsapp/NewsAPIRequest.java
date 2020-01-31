@@ -29,16 +29,16 @@ public class NewsAPIRequest {
         anyParameterUsed = false;
 
         String requestURL = "https://newsapi.org/v2/top-headlines?";
-        if(!(country == null)){
+        if(!(country == null || country.equals(""))){
             requestURL += "country="+country+"&";
             anyParameterUsed=true;
         }
-        if(!(category == null)){
+        if(!(category == null || category.equals(""))){
             requestURL += "category="+category+"&";
             anyParameterUsed=true;
         }
         if (!anyParameterUsed){
-            requestURL += "country=pl&";
+            requestURL += "category=general&";
         }
 
         requestURL += "apiKey="+APIKey;
