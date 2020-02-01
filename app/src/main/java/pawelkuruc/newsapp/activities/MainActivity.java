@@ -119,9 +119,6 @@ public class MainActivity extends AppCompatActivity{
             ArticlesList articlesList = new ArticlesList();
 
                 try{
-                    //queryResponse = "HTTP status code: "+request.getCode();
-                    //queryResponse += " Content: "+request.getContent();
-
                     articlesList = new Gson().fromJson(request.getContent(), ArticlesList.class);
 
                 }catch (Exception e){

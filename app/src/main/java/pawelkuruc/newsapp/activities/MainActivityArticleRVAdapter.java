@@ -2,6 +2,7 @@ package pawelkuruc.newsapp.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
@@ -80,9 +81,15 @@ public class MainActivityArticleRVAdapter extends RecyclerView.Adapter<MainActiv
 
         @Override
         public void onClick(View v) {
-            Snackbar.make(v, "Z torsu do dupy (inverse Zdupynators)", Snackbar.LENGTH_LONG)
+
+            Snackbar.make(v, "*click*", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();
 
+            Article article = articlesList.get(getAdapterPosition());
+
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(articlesList.get(getAdapterPosition()).getUrl()));
+            browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            getContext().startActivity(browserIntent);
         }
     }
 }
