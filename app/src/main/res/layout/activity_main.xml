@@ -45,6 +45,13 @@
         app:layout_constraintTop_toBottomOf="@+id/bSearch"
         tools:text="text" />
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvContent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="72dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bSearch" />
 
 
 </android.support.constraint.ConstraintLayout>

@@ -4,6 +4,8 @@ import android.os.AsyncTask;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -18,6 +20,7 @@ import java.util.List;
 import pawelkuruc.newsapp.api.NewsAPIKey;
 import pawelkuruc.newsapp.api.NewsAPIRequest;
 import pawelkuruc.newsapp.R;
+import pawelkuruc.newsapp.model.Article;
 import pawelkuruc.newsapp.model.ArticlesList;
 
 public class MainActivity extends AppCompatActivity{
@@ -32,7 +35,9 @@ public class MainActivity extends AppCompatActivity{
 
     TextView tvContent;
 
-    private List<ArticlesList> articlesList;
+    RecyclerView rvContent;
+
+    private List<Article> articlesList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +70,17 @@ public class MainActivity extends AppCompatActivity{
         });
 
         tvContent = (TextView) findViewById(R.id.tvContent);
+
+        rvContent = (RecyclerView) findViewById(R.id.rvContent);
+
+        LinearLayoutManager llm = new LinearLayoutManager(this.getApplicationContext());
+        rvContent.setHasFixedSize(true);
+        rvContent.setLayoutManager(llm);
+
+        MainActivityArticleRVAdapter adapter = new MainActivityArticleRVAdapter(this.getApplicationContext(), articlesList);
+        rvContent.setAdapter(adapter);
+
+
 
     }
 
@@ -117,19 +133,30 @@ public class MainActivity extends AppCompatActivity{
         }
 
         @Override
-        protected void onPostExecute(ArticlesList articlesList) {
-            super.onPostExecute(articlesList);
+        protected void onPostExecute(ArticlesList articlesListFromAPI) {
+            super.onPostExecute(articlesListFromAPI);
+
+            articlesList = articlesListFromAPI.getArticles();
 
             String content = "";
 
-            for (int i = 0 ; i < articlesList.getArticles().size() ; i++ ){
-                content += "Source: " + articlesList.getArticles().get(i).getSource().getName()+"\n";
-                content += "Title: " + articlesList.getArticles().get(i).getTitle()+"\n";
-                content += "URL: " + articlesList.getArticles().get(i).getUrl()+"\n\n";
+            for (int i = 0 ; i < articlesList.size() ; i++ ){
+                content += "Source: " + articlesList.get(i).getSource().getName()+"\n";
+                content += "Title: " + articlesList.get(i).getTitle()+"\n";
+                content += "URL: " + articlesList.get(i).getUrl()+"\n\n";
             }
 
-                tvContent.setText(content);
 
+            try {
+                updateRvContent();
+            }catch (Exception e) {
+                tvContent.setText(content);
+            }
         }
+    }
+
+    private void updateRvContent() {
+        MainActivityArticleRVAdapter adapter = new MainActivityArticleRVAdapter(getApplicationContext(), articlesList);
+        rvContent.setAdapter(adapter);
     }
 }
