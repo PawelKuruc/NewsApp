@@ -1,4 +1,4 @@
-package pawelkuruc.newsapp;
+package pawelkuruc.newsapp.api;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

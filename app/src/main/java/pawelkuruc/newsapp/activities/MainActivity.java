@@ -1,6 +1,5 @@
-package pawelkuruc.newsapp;
+package pawelkuruc.newsapp.activities;
 
-import android.app.Activity;
 import android.os.AsyncTask;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +10,15 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import com.google.gson.Gson;
+
+import java.util.List;
+
+import pawelkuruc.newsapp.api.NewsAPIKey;
+import pawelkuruc.newsapp.api.NewsAPIRequest;
+import pawelkuruc.newsapp.R;
+import pawelkuruc.newsapp.model.ArticlesList;
 
 public class MainActivity extends AppCompatActivity{
 
@@ -23,6 +31,8 @@ public class MainActivity extends AppCompatActivity{
     Button bSearch;
 
     TextView tvContent;
+
+    private List<ArticlesList> articlesList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,31 +92,43 @@ public class MainActivity extends AppCompatActivity{
         }
     }
 
-    private class AsyncNetworkProcessing extends AsyncTask <String, Void, String> {
+    private class AsyncNetworkProcessing extends AsyncTask <String, Void, ArticlesList> {
 
         @Override
-        protected String doInBackground(String... params) {
+        protected ArticlesList doInBackground(String... params) {
             NewsAPIRequest request = new NewsAPIRequest(NewsAPIKey.getAPIKey());
             request.requestTopHeadlines(params[0],params[1]);
 
             String queryResponse="";
+            ArticlesList articlesList = new ArticlesList();
 
                 try{
-                    queryResponse = "HTTP status code: "+request.getCode();
-                    queryResponse += " Content: "+request.getContent();
+                    //queryResponse = "HTTP status code: "+request.getCode();
+                    //queryResponse += " Content: "+request.getContent();
+
+                    articlesList = new Gson().fromJson(request.getContent(), ArticlesList.class);
+
                 }catch (Exception e){
                     e.printStackTrace();
                 }finally {
-                    return queryResponse;
+                    return articlesList;
                 }
 
         }
 
         @Override
-        protected void onPostExecute(String queryResponse) {
-            super.onPostExecute(queryResponse);
+        protected void onPostExecute(ArticlesList articlesList) {
+            super.onPostExecute(articlesList);
 
-                tvContent.setText(queryResponse);
+            String content = "";
+
+            for (int i = 0 ; i < articlesList.getArticles().size() ; i++ ){
+                content += "Source: " + articlesList.getArticles().get(i).getSource().getName()+"\n";
+                content += "Title: " + articlesList.getArticles().get(i).getTitle()+"\n";
+                content += "URL: " + articlesList.getArticles().get(i).getUrl()+"\n\n";
+            }
+
+                tvContent.setText(content);
 
         }
     }
